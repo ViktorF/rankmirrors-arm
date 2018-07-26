@@ -1,0 +1,11 @@
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Target = pacman-mirrorlist
+
+[Action]
+Description = Ranking mirrorlist
+When = PostTransaction
+Exec = /path/to/rankmirrors-arm/rankmirrors-arm.sh -p
