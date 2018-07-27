@@ -70,7 +70,7 @@ error() {
 }
 
 strip_content() {
-  msg "Stripping unneeded content from mirrorlist"
+  (( OUTPUTONLY )) || msg "Stripping unneeded content from mirrorlist"
   #delete blank lines, uncomment all Servers, remove every line not starting with Server =
   sed '/^\s*$/d; s/^# Server/Server/; /^Server = /!d' $1 > /tmp/mirrorlist.tmp
 }
@@ -126,7 +126,7 @@ case $(( USE_PACMAN + USE_GET + USE_FILE )) in
     usage; exit 1;;
 esac
 
-msg "Retrieving source mirrorlist"
+(( OUTPUTONLY )) || msg "Retrieving source mirrorlist"
 #write mirrors to /tmp/mirrorlist.tmp using strip_content
 if (( USE_PACMAN )); then
   strip_content $pacmirrorlist
@@ -141,7 +141,6 @@ elif (( USE_FILE )); then
 fi
 
 if (( OUTPUTONLY )); then
-  msg "Sorted mirrorlist:"
   rankmirrors $RM_MAXSERVERS $RM_MAXTIME /tmp/mirrorlist.tmp
 else
   cp $pacmirrorlist $pacmirrorlist.bckp
