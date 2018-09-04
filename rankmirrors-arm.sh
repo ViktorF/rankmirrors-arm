@@ -38,6 +38,9 @@ Source Options:        select one (default: --pacman)
   -g/--get             get the current mirrorlist from archlinuxarm's pacman-mirrorlist sources
   -f/--file            use the specified MIRRORFILE
 
+--pacman Options:
+  -u/--update          Only in combination with -p. For use in upgrade hook. Tries to use mirrorlist.pacnew instead of old mirrorlist
+
 Rankmirrors Options:   passed on to rankmirrors tool
   -n NUM               number of servers to output, 0 for all
   -m/--max-time NUM    specify a ranking operation timeout, can be decimal number
@@ -98,6 +101,8 @@ while [[ -n "$1" ]]; do
   case "$1" in
     -p|--pacman)
       USE_PACMAN=1;;
+    -u|--update)
+      USE_UPDATE=1;;
     -g|--get)
       USE_GET=1;;
     -f|--file)
@@ -126,6 +131,10 @@ case $(( USE_PACMAN + USE_GET + USE_FILE )) in
     usage; exit 1;;
 esac
 
+case $(( USE_PACMAN + USE_UPDATE )) in
+	2) pacmirrorlist='/etc/pacman.d/mirrorlist.pacnew';;
+esac
+
 (( OUTPUTONLY )) || msg "Retrieving source mirrorlist"
 #write mirrors to /tmp/mirrorlist.tmp using strip_content
 if (( USE_PACMAN )); then
@@ -143,6 +152,7 @@ fi
 if (( OUTPUTONLY )); then
   rankmirrors $RM_MAXSERVERS $RM_MAXTIME /tmp/mirrorlist.tmp
 else
+  pacmirrorlist=${pacmirrorlist%%.pacnew}
   cp $pacmirrorlist $pacmirrorlist.bckp
   rankmirrors $RM_MAXSERVERS $RM_MAXTIME /tmp/mirrorlist.tmp > $pacmirrorlist
   msg "Replaced Pacman's mirrorlist with new one!"

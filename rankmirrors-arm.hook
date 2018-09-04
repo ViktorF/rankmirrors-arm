@@ -8,4 +8,4 @@ Target = pacman-mirrorlist
 [Action]
 Description = Ranking mirrorlist
 When = PostTransaction
-Exec = /path/to/rankmirrors-arm/rankmirrors-arm.sh -p
+Exec = /path/to/rankmirrors-arm/rankmirrors-arm.sh -p -u
